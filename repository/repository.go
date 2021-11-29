@@ -2,10 +2,19 @@ package repository
 
 import "github.com/DaniellaFreese/stocks-api/model"
 
-//domain layer
-type StockRepository interface {
-	GetStock(id string) (*model.Stock, error)
+type Repository interface {
+	GetStock(id int) (*model.Stock, error)
 	GetStocks() (*[]model.Stock, error)
-	AddStock() error
+	AddStock(ticker string) error
 	DeleteStock(id string) error
+}
+
+type Controller struct {
+	Service Repository
+}
+
+func InitController(listRepo *ListRepo) *Controller {
+	return &Controller{
+		Service: listRepo,
+	}
 }

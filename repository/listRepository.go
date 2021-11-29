@@ -2,11 +2,13 @@ package repository
 
 import "github.com/DaniellaFreese/stocks-api/model"
 
-type ListRepository struct {
+//in real world should be a DB connection object
+type ListRepo struct {
 	stocks map[int]model.Stock
 }
 
-func NewDatabase() *ListRepository {
+//Create a new List Repo,in real world would initialize db connection
+func NewListRepo() *ListRepo {
 	s1 := model.Stock{
 		Company: "Microsoft",
 		Ticker:  "MSFT",
@@ -28,7 +30,7 @@ func NewDatabase() *ListRepository {
 		PERatio: 10,
 		ID:      3,
 	}
-	repo := ListRepository{
+	repo := ListRepo{
 		map[int]model.Stock{
 			s1.ID: s1,
 			s2.ID: s2,
@@ -38,12 +40,12 @@ func NewDatabase() *ListRepository {
 	return &repo
 }
 
-func (l ListRepository) GetStock(id int) (*model.Stock, error) {
+func (l ListRepo) GetStock(id int) (*model.Stock, error) {
 	stock := l.stocks[id]
 	return &stock, nil
 }
 
-func (l ListRepository) GetStocks() (*[]model.Stock, error) {
+func (l ListRepo) GetStocks() (*[]model.Stock, error) {
 	stocks := []model.Stock{}
 
 	for _, v := range l.stocks {
@@ -51,4 +53,12 @@ func (l ListRepository) GetStocks() (*[]model.Stock, error) {
 	}
 
 	return &stocks, nil
+}
+
+func (l ListRepo) AddStock(ticker string) error {
+	return nil
+}
+
+func (l ListRepo) DeleteStock(id string) error {
+	return nil
 }

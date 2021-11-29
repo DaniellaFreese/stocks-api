@@ -12,10 +12,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var listRepository *repository.ListRepository
+var control *repository.Controller
 
-func createListRepo() {
-	listRepository = repository.NewDatabase()
+func newController(controller *repository.Controller) {
+	control = controller
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -32,8 +32,7 @@ func stockDetails(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(stock)
 		return
 	}
-
-	stock, err = listRepository.GetStock(id)
+	stock, err = control.Service.GetStock(id)
 	json.NewEncoder(w).Encode(stock)
 }
 
