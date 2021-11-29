@@ -36,9 +36,9 @@ func stockDetails(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stock)
 }
 
-func stocksList(w http.ResponseWriter, r *http.Request) {}
+func stockList(w http.ResponseWriter, r *http.Request) {}
 
-func dddStock(w http.ResponseWriter, r *http.Request) {}
+func addStock(w http.ResponseWriter, r *http.Request) {}
 
 func removeStock(w http.ResponseWriter, r *http.Request) {}
 
