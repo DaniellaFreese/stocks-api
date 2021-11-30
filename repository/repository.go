@@ -5,8 +5,9 @@ import "github.com/DaniellaFreese/stocks-api/model"
 type Repository interface {
 	GetStock(id int) (*model.Stock, error)
 	GetStocks() (*[]model.Stock, error)
-	AddStock(ticker string) error
-	DeleteStock(id string) error
+	//fix this to return the list of stocks
+	AddStock(stock *model.Stock) (*[]model.Stock, error)
+	DeleteStock(id int) (*[]model.Stock, error)
 }
 
 type Controller struct {

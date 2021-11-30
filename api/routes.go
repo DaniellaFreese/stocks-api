@@ -15,6 +15,8 @@ func Routes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Get("/", homePage)
 	mux.Get("/stock/{stockID}", stockDetails)
+	mux.Get("/stock", stockList)
+	mux.Put("/stock/{ticker}", addStock)
 
 	return mux
 }

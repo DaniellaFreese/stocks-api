@@ -55,10 +55,18 @@ func (l ListRepo) GetStocks() (*[]model.Stock, error) {
 	return &stocks, nil
 }
 
-func (l ListRepo) AddStock(ticker string) error {
-	return nil
+//make an api call to get the stock details then add it to the map for now will mock it out
+func (l ListRepo) AddStock(stock *model.Stock) (*[]model.Stock, error) {
+
+	l.stocks[stock.ID] = *stock
+
+	return l.GetStocks()
+
 }
 
-func (l ListRepo) DeleteStock(id string) error {
-	return nil
+//then add it to the map for now will mock it out
+func (l ListRepo) DeleteStock(id int) (*[]model.Stock, error) {
+	delete(l.stocks, id)
+
+	return l.GetStocks()
 }

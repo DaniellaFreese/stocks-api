@@ -22,6 +22,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "welcome page")
 }
 
+//should make an api call to get a new stock
 func stockDetails(w http.ResponseWriter, r *http.Request) {
 	stock := &model.Stock{}
 
@@ -36,10 +37,49 @@ func stockDetails(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stock)
 }
 
-func stockList(w http.ResponseWriter, r *http.Request) {}
+//make a call to return the current user's list of stocks
+func stockList(w http.ResponseWriter, r *http.Request) {
+	stocks, err := control.Service.GetStocks()
+	if err != nil {
+		http.Error(w, "error returning list", 400)
+		return
+	}
+	json.NewEncoder(w).Encode(stocks)
 
-func addStock(w http.ResponseWriter, r *http.Request) {}
+}
 
-func removeStock(w http.ResponseWriter, r *http.Request) {}
+func addStock(w http.ResponseWriter, r *http.Request) {
+	ticker := chi.URLParam(r, "ticker")
+	stock := model.Stock{ID: 4}
 
-func analyzeStock(w http.ResponseWriter, r *http.Request) {}
+	if ticker == "AXP" {
+		stock.Company = "American Express"
+		stock.Ticker = "AXP"
+		stock.Price = 180
+		stock.PERatio = 37
+	}
+	stocks, err := control.Service.AddStock(&stock)
+	if err != nil {
+		http.Error(w, "error adding stock from list", 400)
+		return
+	}
+	json.NewEncoder(w).Encode(stocks)
+}
+
+func removeStock(w http.ResponseWriter, r *http.Request) {
+	idS := chi.URLParam(r, "stockID")
+	id, err := strconv.Atoi(idS)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "error deleting stock from list", 400)
+		return
+	}
+
+	stocks, err := control.Service.DeleteStock(id)
+	if err != nil {
+		http.Error(w, "error deleting stock from list", 400)
+		return
+	}
+
+	json.NewEncoder(w).Encode(stocks)
+}
