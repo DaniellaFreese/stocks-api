@@ -9,6 +9,7 @@ import (
 
 	"github.com/DaniellaFreese/stocks-api/model"
 	"github.com/DaniellaFreese/stocks-api/repository"
+	"github.com/DaniellaFreese/stocks-api/restClient"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -23,7 +24,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 //should make an api call to get a new stock
-func stockDetails(w http.ResponseWriter, r *http.Request) {
+func stockID(w http.ResponseWriter, r *http.Request) {
 	stock := &model.Stock{}
 
 	idS := chi.URLParam(r, "stockID")
@@ -82,4 +83,16 @@ func removeStock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(stocks)
+}
+
+func quote(w http.ResponseWriter, r *http.Request) {
+
+	body, err := restClient.NewRestClient().GetFinanceQuote("MSFT")
+	if err != nil {
+		http.Error(w, "error getting quote details", 500)
+	}
+
+	var cont model.Response
+	json.Unmarshal(body, &cont)
+	json.NewEncoder(w).Encode(cont.Key.Key[0])
 }
