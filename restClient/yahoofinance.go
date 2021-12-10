@@ -11,7 +11,7 @@ import (
 
 var control *repository.Controller
 
-func NewController(controller *repository.Controller) {
+func Controller(controller *repository.Controller) {
 	control = controller
 }
 

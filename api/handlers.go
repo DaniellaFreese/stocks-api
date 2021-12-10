@@ -14,16 +14,21 @@ import (
 )
 
 var control *repository.Controller
+var rc *restClient.RestClient
 
-func newController(controller *repository.Controller) {
+func Controller(controller *repository.Controller) {
 	control = controller
+}
+
+func newRC(restClient *restClient.RestClient) {
+	rc = restClient
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "welcome page")
 }
 
-//should make an api call to get a new stock
+//Return a specific stock from your watch list
 func stockID(w http.ResponseWriter, r *http.Request) {
 	stock := &model.Stock{}
 
@@ -38,7 +43,7 @@ func stockID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stock)
 }
 
-//make a call to return the current user's list of stocks
+//return the entire watch list of stocks
 func stockList(w http.ResponseWriter, r *http.Request) {
 	stocks, err := control.Service.GetStocks()
 	if err != nil {
@@ -49,6 +54,8 @@ func stockList(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//add a stock to the watch list
+//need to call yahoo finance to get ticker data, and create stock model and add it to the watchlist
 func addStock(w http.ResponseWriter, r *http.Request) {
 	ticker := chi.URLParam(r, "ticker")
 	stock := model.Stock{ID: 4}
@@ -67,6 +74,7 @@ func addStock(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stocks)
 }
 
+//remove a stock from the watch list
 func removeStock(w http.ResponseWriter, r *http.Request) {
 	idS := chi.URLParam(r, "stockID")
 	id, err := strconv.Atoi(idS)
@@ -85,9 +93,11 @@ func removeStock(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stocks)
 }
 
+//get latest data on a particular stock
 func quote(w http.ResponseWriter, r *http.Request) {
+	ticker := chi.URLParam(r, "ticker")
 
-	body, err := restClient.NewRestClient().GetFinanceQuote("MSFT")
+	body, err := rc.GetFinanceQuote(ticker)
 	if err != nil {
 		http.Error(w, "error getting quote details", 500)
 	}
