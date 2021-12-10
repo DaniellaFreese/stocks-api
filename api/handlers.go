@@ -58,14 +58,22 @@ func stockList(w http.ResponseWriter, r *http.Request) {
 //need to call yahoo finance to get ticker data, and create stock model and add it to the watchlist
 func addStock(w http.ResponseWriter, r *http.Request) {
 	ticker := chi.URLParam(r, "ticker")
-	stock := model.Stock{ID: 4}
 
-	if ticker == "AXP" {
-		stock.Company = "American Express"
-		stock.Ticker = "AXP"
-		stock.Price = 180
-		stock.PERatio = 37
+	body, err := rc.GetFinanceQuote(ticker)
+	if err != nil {
+		http.Error(w, "error getting quote details", 500)
 	}
+
+	var cont model.Response
+	json.Unmarshal(body, &cont)
+
+	stock := model.Stock{
+		Company: cont.Key.Key[0].Name,
+		Ticker:  cont.Key.Key[0].Symbol,
+		Price:   0.00,
+		PERatio: cont.Key.Key[0].PERatio,
+	}
+
 	stocks, err := control.Service.AddStock(&stock)
 	if err != nil {
 		http.Error(w, "error adding stock from list", 400)
@@ -93,7 +101,7 @@ func removeStock(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stocks)
 }
 
-//get latest data on a particular stock
+//get latest data on a particular stock ticker
 func quote(w http.ResponseWriter, r *http.Request) {
 	ticker := chi.URLParam(r, "ticker")
 

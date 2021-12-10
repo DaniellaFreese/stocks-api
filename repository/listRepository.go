@@ -58,7 +58,9 @@ func (l ListRepo) GetStocks() (*[]model.Stock, error) {
 //make an api call to get the stock details then add it to the map for now will mock it out
 func (l ListRepo) AddStock(stock *model.Stock) (*[]model.Stock, error) {
 
-	l.stocks[stock.ID] = *stock
+	id := len(l.stocks) + 1
+	(*stock).ID = id
+	l.stocks[stock.ID] = (*stock)
 
 	return l.GetStocks()
 
